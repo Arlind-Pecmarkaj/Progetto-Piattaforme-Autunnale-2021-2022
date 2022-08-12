@@ -1,18 +1,107 @@
 <!DOCTYPE html>
 <html lang="it">
   <head>
-    <title>Storia e archeologia - Marche</title>
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
+    <title>Mappa degli eventi storici e dei punti archeologici marchigiani</title>
+        <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+      integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+      integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+      crossorigin=""
+    ></script>
+    <style>
+      #mapid {
+        height: 400px;
+      }
+    </style>
   </head>
   <body>
-    <h1>
-      Questa parte del sito è ancora in fase di costruzione.
-    </h1>
+    <div class="container-fluid text-center">
+      <h1>
+        <img src="https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/logo_regione_marche.png?v"
+             alt="Logo della regione Marche"
+             class="img-fluid"
+             height="2%"
+             width="2%">
+        Storia e archeologia
+      </h1>
+      <p>
+        Eventi storici nelle Marche - Mappa
+      </p>
+    </div>
+    <main>
+      <div id="mapid"></div>
+      <script>
+        const attribution = '&copy; <a href="htts://www.openstreetmap.org/copyright"> OpenStreetMap </a>contributors';
+        const tUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+        const tiles = L.tileLayer(tUrl, { attribution });
+        const latUrbino = 43.728116048101924;
+        const lonUrbino = 12.629905120790676;
+        var map = L.map("mapid");
+
+        tiles.addTo(map);
+        map.setView([latUrbino, lonUrbino], 13);
+        window.addEventListener("load", setupEventi);
+
+        async function setupEventi() {
+          const strutture = await getEventi();
+          for (let i = 2; i < strutture.markersInfo.length; i += 2) {
+            var lon = strutture.markersInfo[i][0];
+            var lat = strutture.markersInfo[i][1];
+            var descrizione = strutture.markersInfo[i + 1];
+            if (!isNaN(lat) && !isNaN(lon)) {
+              var markerStruttura = new L.LatLng(lat, lon);
+              var marker = new L.Marker(markerStruttura);
+              map.addLayer(marker);
+              marker.bindPopup(descrizione);
+            } else {
+              const par = document.getElementById("pid");
+              par.innerHTML += descrizione;
+            }
+          }
+        }
+
+        async function getEventi() {
+          const response = await fetch("/rawdata");
+          const data = await response.text();
+          const markersInfo = []; //[[lat,lon], descrizione]
+          const rows = data.split("\n"); // Categoria,Classificazione,Denominazione,Località,Web,Latitudine,Longitudine
+          rows.forEach((row) => {
+            const cols = row.split(",");
+            const descrizione =
+              "Categoria:" +
+              cols[0] +
+              "<br>" +
+              "Nome struttura: " +
+              cols[2] +
+              "<br>" +
+              "Località: " +
+              cols[3] +
+              "<br>" +
+              'Sito web: <a href="' +
+              cols[4] +
+              '">' +
+              cols[4] +
+              "</a><br><br>";
+            //console.log("Descrizione: " + descrizione);
+            markersInfo.push([parseFloat(cols[5]), parseFloat(cols[6])]);
+            markersInfo.push(descrizione);
+          });
+          return { markersInfo };
+        }
+      </script>
+    </main>
   </body>
 </html>
