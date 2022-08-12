@@ -16,7 +16,7 @@ app.set('views', __dirname);
 // Variabile che memorizza il file json contentente i dati.
 let eventi = JSON.parse(fileSystem.readFileSync("./views/data.json"));
 
-/* ENDPOINT GET */
+/* ---------------------- ENDPOINT GET ---------------------- */
 // N°1 - Endpoint per utenti browser. 
 // La richiesta get senza parametri porta alla pagina di index.
 app.get('/', (req, res) => {
@@ -35,6 +35,25 @@ app.get('/rawdata', (req, res) => {
 app.get('/:page', (req, res) => {
   res.render('./views/'+ req.params.page + '.html');
 })
+
+/* ---------------------- ENDPOINT POST ---------------------- */
+// N°1 - Endpoint aggiunta evento.
+// La richiesta post permette di aggiungere un nuovo punto di interesse.
+app.post('/inserisci', (req, res) => {
+  /*let indice      = req.params.indice;
+  let didascalia  = req.params.didascalia;
+  let comune      = req.params.comune;
+  let indirizzo   = req.params.indirizzo;
+  let civico      = req.params.civico;
+  let telefono    = req.params.telefono;
+  let email       = req.params.email;
+  let sito        = req.params.sito;
+  let latitudine  = req.params.latitudine;
+  let longitudine = req.params.longitudine; */
+  const evento = req.body;
+  eventi.push(evento);
+  fileSystem.writeFileSync("./views/data.json", JSON.stringify(eventi));
+});
 
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
