@@ -4,8 +4,10 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mappa degli eventi storici e dei punti archeologici marchigiani</title>
-        <link
+    <title>
+      Mappa degli eventi storici e dei punti archeologici marchigiani
+    </title>
+    <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
@@ -30,27 +32,57 @@
   <body>
     <div class="container-fluid text-center">
       <h1>
-        <img src="https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/logo_regione_marche.png?v"
-             alt="Logo della regione Marche"
-             class="img-fluid"
-             height="2%"
-             width="2%">
+        <img
+          src="https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/logo_regione_marche.png?v"
+          alt="Logo della regione Marche"
+          class="img-fluid"
+          height="2%"
+          width="2%"
+        />
         Storia e archeologia
       </h1>
-      <p>
-        Eventi storici nelle Marche - Mappa
-      </p>
+      <p>Eventi storici nelle Marche - Mappa</p>
+      <button
+        type="button"
+        class="btn"
+        style="background-color: #008549; color: white"
+        onclick="window.location.href ='/';"
+      >
+        Torna alla pagina iniziale.
+      </button>
     </div>
+    <br />
     <main>
       <div id="mapid"></div>
+      <br />
+      <div class="text-center">
+        <h3>Lista completa</h3>
+        <table class="table-sm table-hover">
+          <thead style="background-color: #008549; color: white">
+            <th scope="col">Didascalia</th>
+            <th scope="col">Tipologia</th>
+            <th scope="col">Denominazione</th>
+            <th scope="col">Comune</th>
+            <th scope="col">Indirizzo</th>
+            <th scope="col">Civico</th>
+            <th scope="col">Telefono</th>
+            <th scope="col">Email</th>
+            <th scope="col">Sito Web</th>
+            <th scope="col">Orario di apertura</th>
+          </thead>
+          <tbody id="tabellaeventi"></tbody>
+        </table>
+      </div>
       <script>
-        const attribution = '&copy; <a href="htts://www.openstreetmap.org/copyright"> OpenStreetMap </a>contributors';
+        const attribution =
+          '&copy; <a href="htts://www.openstreetmap.org/copyright"> OpenStreetMap </a>contributors';
         const tUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
         const tiles = L.tileLayer(tUrl, { attribution });
         const latUrbino = 43.728116048101924;
         const lonUrbino = 12.629905120790676;
         var map = L.map("mapid");
-
+        
+        // Setup della mappa alla posizione di Urbino
         tiles.addTo(map);
         map.setView([latUrbino, lonUrbino], 13);
         window.addEventListener("load", setupEventi);
@@ -67,8 +99,7 @@
               map.addLayer(marker);
               marker.bindPopup(descrizione);
             } else {
-              const par = document.getElementById("pid");
-              par.innerHTML += descrizione;
+              console.log("Posizione assente per " + descrizione);
             }
           }
         }
@@ -76,28 +107,64 @@
         async function getEventi() {
           const response = await fetch("/rawdata");
           const data = await response.text();
-          const markersInfo = []; //[[lat,lon], descrizione]
-          const rows = data.split("\n"); // Categoria,Classificazione,Denominazione,Località,Web,Latitudine,Longitudine
+          const markersInfo = []; // ([lat,lon], descrizione complessiva)
+          const rows = data.split("\n"); //Per dividere le righe del csv.
+          let flag = 0;
           rows.forEach((row) => {
-            const cols = row.split(",");
+            const cols = row.split(";"); // La separazione dei valori in data.csv è tramite ';'.
+            // Qui mettiamo la descrizione nei pop-up dei marker presenti nella mappa
             const descrizione =
-              "Categoria:" +
               cols[0] +
               "<br>" +
-              "Nome struttura: " +
-              cols[2] +
+              "Tipologia: " +
+              cols[1] +
               "<br>" +
-              "Località: " +
-              cols[3] +
-              "<br>" +
-              'Sito web: <a href="' +
-              cols[4] +
+              "Comune: " +
+              cols[3];
+            "<br>" +
+              'Sito web: <a href="https://' +
+              cols[8] +
               '">' +
-              cols[4] +
               "</a><br><br>";
-            //console.log("Descrizione: " + descrizione);
-            markersInfo.push([parseFloat(cols[5]), parseFloat(cols[6])]);
-            markersInfo.push(descrizione);
+            // Se le prime tre colonne (fondamentali per l'identificazione) 
+            // sono assenti non è giusto inserirle in mappa e in lista.
+            if (flag != 0 && cols[0] !== undefined && cols[1] !== undefined && cols[3] !== undefined) {
+              markersInfo.push([parseFloat(cols[10]), parseFloat(cols[9])]);
+              markersInfo.push(descrizione);
+              rigaTabella =
+                '<tr class="fw-lighter"><th scope="row">' +
+                cols[0] +
+                "</th>" +
+                "<td>" +
+                cols[1] +
+                "</td>" +
+                "<td>" +
+                cols[2] +
+                "</td>" +
+                "<td>" +
+                cols[3] +
+                "</td>" +
+                "<td>" +
+                cols[4] +
+                "</td>" +
+                "<td>" +
+                cols[5] +
+                "</td>" +
+                "<td>" +
+                cols[6] +
+                "</td>" +
+                "<td>" +
+                cols[7] +
+                "</td>" +
+                "<td>" +
+                cols[8] +
+                "</td>" +
+                "<td>" +
+                cols[11] +
+                "</td>";
+              document.getElementById("tabellaeventi").innerHTML += rigaTabella;
+            }
+            flag++;
           });
           return { markersInfo };
         }
