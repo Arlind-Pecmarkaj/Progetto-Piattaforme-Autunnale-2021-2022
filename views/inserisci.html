@@ -11,8 +11,123 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </head>
   <body>
-    <h1>
-      Questa parte del sito è ancora in fase di costruzione.
-    </h1>
+    <div class="container-fluid text-center">
+      <h1>
+        <img
+          src="https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/logo_regione_marche.png?v"
+          alt="Logo della regione Marche"
+          class="img-fluid"
+          height="2%"
+          width="2%"
+        />
+        Storia e archeologia
+      </h1>
+      <p>Eventi storici nelle Marche - Inserimento</p>
+    </div>
+    <div class="text-center">
+      <button
+        type="button"
+        class="btn"
+        style="background-color: #008549; color: white"
+        onclick="window.location.href ='/';"
+      >
+        Torna alla pagina iniziale.
+      </button>
+    </div>
+    <hr />
+    <h5 class="text-center">
+      Compila i campi e premi inserisci per inserire un evento o un punto di
+      interesse
+    </h5>
+    <div class="text-center" style="background-color: #008549; color: white">
+      <form action="inserimento" method="post" class="m-4" id="forminserimento">
+        <div class="row">
+          <div class="col">
+            <label for="didascalia" class="form-label">Didascalia</label>
+            <input type="text" class="form-control" id="didascalia" required />
+          </div>
+          <div class="col-auto">
+            <label for="tipologia" class="form-label">Tipologia</label>
+            <select id="tipologia" class="form-select" required>
+              <option value="architettura">Architettura e paesaggio</option>
+              <option value="archeologia">Archeologia</option>
+              <option value="storie">Storie e leggende</option>
+              <option value="tradizioni">Tradizioni</option>
+            </select>
+          </div>
+          <div class="col">
+            <label for="denominazione" class="form-label">Denominazione</label>
+            <input
+              type="text"
+              class="form-control"
+              id="denominazione"
+              required
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="comune" class="form-label">Comune</label>
+            <input type="text" class="form-control" id="comune" required />
+          </div>
+          <div class="col">
+            <label for="indirizzo" class="form-label">Indirizzo</label>
+            <input
+              type="text"
+              class="form-control"
+              id="indirizzo"
+              placeholder="Via/Piazza Nome"
+            />
+          </div>
+          <div class="col-auto">
+            <label for="civico" class="form-label">Civico</label>
+            <input type="number" class="form-control" id="civico" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-auto">
+            <label for="telefono" class="form-label">Telefono</label>
+            <input type="tel" class="form-control" id="telefono" />
+          </div>
+          <div class="col">
+            <label for="mail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="mail" />
+          </div>
+          <div class="col">
+            <label for="sitoweb" class="form-label">Sito web</label>
+            <input type="url" class="form-control" id="sito" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <label for="latitudine" class="form-label">Latitudine</label>
+            <input
+              type="number"
+              step="0.0001"
+              class="form-control"
+              id="latitudine"
+              required
+            />
+          </div>
+          <div class="col">
+            <label for="longitudine" class="form-label">Longitudine</label>
+            <input
+              type="number"
+              step="0.0001"
+              class="form-control"
+              id="longitudine"
+              required
+            />
+          </div>
+          <div class="col">
+            <label for="orario" class="form-label">Orario di apertura</label>
+            <input type="text" class="form-control" id="orario" />
+          </div>
+        </div>
+        <br />
+        <button class="btn btn-outline-light" type="submit">Inserisci</button>
+      </form>
+      <br />
+    </div>
   </body>
 </html>
