@@ -40,19 +40,30 @@
       interesse
     </h5>
     <div class="text-center" style="background-color: #008549; color: white">
-      <form action="inserimento" method="post" class="m-4" id="forminserimento">
+      <form action="inserimento" method="get" class="m-4" id="forminserimento">
         <div class="row">
           <div class="col">
             <label for="didascalia" class="form-label">Didascalia</label>
-            <input type="text" class="form-control" id="didascalia" required />
+            <input
+              type="text"
+              class="form-control"
+              id="didascalia"
+              name="didascalia"
+              required
+            />
           </div>
           <div class="col-auto">
             <label for="tipologia" class="form-label">Tipologia</label>
-            <select id="tipologia" class="form-select" required>
-              <option value="architettura">Architettura e paesaggio</option>
-              <option value="archeologia">Archeologia</option>
-              <option value="storie">Storie e leggende</option>
-              <option value="tradizioni">Tradizioni</option>
+            <select
+              id="tipologia"
+              name="tipologia"
+              class="form-select"
+              required
+            >
+              <option value="Architettura e paesaggio">Architettura e paesaggio</option>
+              <option value="Archeologia">Archeologia</option>
+              <option value="Storie e leggende">Storie e leggende</option>
+              <option value="Tradizioni">Tradizioni</option>
             </select>
           </div>
           <div class="col">
@@ -61,6 +72,7 @@
               type="text"
               class="form-control"
               id="denominazione"
+              name="denominazione"
               required
             />
           </div>
@@ -68,7 +80,13 @@
         <div class="row">
           <div class="col">
             <label for="comune" class="form-label">Comune</label>
-            <input type="text" class="form-control" id="comune" required />
+            <input
+              type="text"
+              name="comune"
+              class="form-control"
+              id="comune"
+              required
+            />
           </div>
           <div class="col">
             <label for="indirizzo" class="form-label">Indirizzo</label>
@@ -77,25 +95,36 @@
               class="form-control"
               id="indirizzo"
               placeholder="Via/Piazza Nome"
+              name="indirizzo"
             />
           </div>
           <div class="col-auto">
             <label for="civico" class="form-label">Civico</label>
-            <input type="number" class="form-control" id="civico" />
+            <input
+              type="number"
+              class="form-control"
+              id="civico"
+              name="civico"
+            />
           </div>
         </div>
         <div class="row">
           <div class="col-auto">
             <label for="telefono" class="form-label">Telefono</label>
-            <input type="tel" class="form-control" id="telefono" />
+            <input
+              type="tel"
+              class="form-control"
+              id="telefono"
+              name="telefono"
+            />
           </div>
           <div class="col">
             <label for="mail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="mail" />
+            <input type="mail" class="form-control" id="mail" name="mail" />
           </div>
           <div class="col">
             <label for="sitoweb" class="form-label">Sito web</label>
-            <input type="url" class="form-control" id="sito" />
+            <input type="url" class="form-control" id="sito" name="sito" />
           </div>
         </div>
         <div class="row">
@@ -106,6 +135,7 @@
               step="0.0001"
               class="form-control"
               id="latitudine"
+              name="latitudine"
               required
             />
           </div>
@@ -116,12 +146,13 @@
               step="0.0001"
               class="form-control"
               id="longitudine"
+              name="longitudine"
               required
             />
           </div>
           <div class="col">
             <label for="orario" class="form-label">Orario di apertura</label>
-            <input type="text" class="form-control" id="orario" />
+            <input type="text" class="form-control" id="orario" name="orario" />
           </div>
         </div>
         <br />
