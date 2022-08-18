@@ -1,7 +1,7 @@
 {
   "name": "progetto-piattaforme-marche-event",
-  "version": "0.1.0",
-  "description": "piattaforma web che permette di consultare e modificare gli eventi storici e i punti archeologici della regione Marche.",
+  "version": "0.1.2",
+  "description": "Piattaforma web che permette di consultare e modificare gli eventi storici e i punti archeologici della regione Marche.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -14,7 +14,8 @@
     "@fastify/view": "^7.0.0",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
-    "body-parser": "^1.20.0"
+    "body-parser": "^1.20.0",
+    "multer": "^1.4.4"
   },
   "engines": {
     "node": "14.x"

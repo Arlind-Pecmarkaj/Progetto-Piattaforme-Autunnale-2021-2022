@@ -1,6 +1,8 @@
 const express = require("express");
 var bodyParser = require("body-parser");
 const fileSystem = require("fs");
+const multer = require('multer');
+const upload = multer()
 const app = express();
 
 // Inizializzazione tramite express.
@@ -9,12 +11,13 @@ app.use(express.json());
 
 // Setup per la visualizzazione grafica dei file html e
 // per configurare la cartella views come principale.
+
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
 app.set("views", __dirname);
 
 // Variabile che memorizza il file json contentente i dati.
-let eventi = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
+let eventi;
 
 /* ---------------------- ENDPOINT GET ---------------------- */
 // N°1 - Endpoint per utenti browser.
@@ -27,12 +30,7 @@ app.get("/", (req, res) => {
 // Fornisce tutti i dati puri
 app.get("/rawdata", (req, res) => {
   console.log("Richiesta dei dati puri.");
-  console.log(eventi);
   res.type("text/csv").sendFile(__dirname + "/views/data.csv");
-});
-
-app.get("/prova", (req, res) => {
-  res.send(eventi);
 });
 
 // N°3 - Endpoint per fornire le varie pagine html di visualizzazione.
@@ -56,13 +54,52 @@ app.get("/cerca", (req, res) => {
   res.render("./views/cerca.html");
 })
 
-/* ---------------------- ENDPOINT POST ---------------------- */
-// N°1 - Endpoint aggiunta evento.
-// La richiesta post permette di aggiungere un nuovo punto di interesse.
-app.post("/inserisci", (req, res) => {
-  const evento = req.body;
+// N° 4 - Endpoint aggiunta evento.
+// La richiesta permette di aggiungere un nuovo punto di interesse tramite form html.
+app.get("/inserimento", (req, res) => {
+  eventi = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
+  let didascalia    = req.query.didascalia;
+  let tipologia     = req.query.tipologia;
+  let denominazione = req.query.denominazione
+  let comune        = req.query.comune;
+  let indirizzo     = req.query.indirizzo;
+  let civico        = (indirizzo === "")? req.query.civico : ""; //Se l'indirizzo è vuoto il civico è inutile metterlo
+  let telefono      = req.query.telefono;
+  let email         = req.query.mail;
+  let sito          = req.query.sito;
+  let latitudine    = req.query.latitudine;
+  let longitudine   = req.query.longitudine;
+  let orario        = req.query.orario;  
+  let evento = [didascalia           + ";" + 
+                tipologia            + ";" + 
+                denominazione        + ";" +
+                comune.toUpperCase() + ";" + 
+                indirizzo            + ";" +
+                civico               + ";" +
+                telefono             + ";" + 
+                email                + ";" +
+                sito                 + ";" +
+                latitudine           + ";" +
+                longitudine          + ";" +
+                orario];
   eventi.push(evento);
-  fileSystem.writeFileSync("./views/data.csv", JSON.stringify(eventi));
+  console.log(eventi);
+  
+  // L'input di orario lascia un '/n' e per risolverlo lo mettiamo per ultimo per non 
+  // mettere una escape sequence in più
+  let csv = "";
+  for (let i = 0; i < eventi.length - 1; i++) {
+    csv += String(eventi[i]) + "\n";
+  }
+  csv += String(eventi[eventi.length - 1]);
+  
+  fileSystem.writeFileSync(__dirname + "/views/data.csv", csv);
+  res.render("./views/successo.html");
+});
+
+/* --- ENDPOIND DELETE --- */
+app.delete("/rimuovi/:position", (req, res) => {
+  
 });
 
 const listener = app.listen(process.env.PORT, () => {
