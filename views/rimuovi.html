@@ -10,9 +10,58 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </head>
-  <body>
-    <h1>
-      Questa parte del sito è ancora in fase di costruzione.
-    </h1>
+  <body style="background-color: #008549; color: white">
+  <script>
+    async function rimuovi() {
+      pos = document.getElementById("posizione").value;
+      const response = await fetch('/rimuovi/' + pos, {method: 'DELETE'});
+      if (response.ok) {
+        document.getElementById("risultato").innerHTML = "<h4> Elemento rimosso correttamente! </h4>"
+      } else {
+        txt = await response.text();
+        document.getElementById("risultato").innerHTML = "<h4> ERRORE: " + txt + "</h4>"
+      }
+    }
+  </script>
+  <div class="container-fluid text-center" style="background-color: white; color: black">
+      <h1>
+        <img src="https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/logo_regione_marche.png?v"
+             alt="Logo della regione Marche"
+             class="img-fluid"
+             height="2%"
+             width="2%">
+        Storia e archeologia
+      </h1>
+      <p>
+        Eventi storici nelle Marche - Rimozione
+      </p>
+      <div class="text-center">
+        <button
+          type="button"
+          class="btn"
+          style="background-color: #008549; color: white"
+          onclick="window.location.href ='/';">
+          Torna alla pagina iniziale.
+        </button>
+      </div>
+    <hr>
+    </div>
+    <div class="text-center m-2" style="background-color: #008549; color: white">
+      <div class="row p-1 m-1">
+        <div class="col d-grid gap-2 text-left">
+          <h6>Inserisci l'indice dell'elemento da rimuovere</h6>
+        </div>
+        <div class="col sm-1">
+          <input type="number" class="form-control" name="posizione" id="posizione">
+        </div>
+        <div class="col sm-4 d-grid gap-2">
+          <button class="btn btn-outline-light" onclick="rimuovi()">Rimuovi</button>
+        </div>
+      </div>
+      <br>
+      <div class="row" id = "risultato">
+        
+      </div>
+    </div>
   </body>
 </html>
