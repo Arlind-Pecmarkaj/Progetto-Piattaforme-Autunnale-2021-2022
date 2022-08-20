@@ -10,9 +10,128 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </head>
-  <body>
-    <h1>
-      Questa parte del sito è ancora in fase di costruzione.
-    </h1>
+  <body style="background-color: #008549; color: white">
+    <script>
+      async function cerca(param) {
+        let table =
+          '<table class="table-sm table-hover">' +
+          '<thead style="background-color: #008549; color: white">' +
+          '<th scope="col">Didascalia</th>' +
+          '<th scope="col">Tipologia</th>' +
+          '<th scope="col">Denominazione</th>' +
+          '<th scope="col">Comune</th>' +
+          '<th scope="col">Indirizzo</th> ' +
+          '<th scope="col">Civico</th>' +
+          '<th scope="col">Telefono</th>' +
+          '<th scope="col">Email</th>' +
+          '<th scope="col">Sito Web</th>' +
+          '<th scope="col">Orario di apertura</th>' +
+          '</thead><tbody id="tabellaeventi">';
+
+        if (param === 1) {
+          index = document.getElementById("indice").value;
+          const res = await fetch("/data/" + index);
+          if (res.ok) {
+            txt = await res.text();
+            params = txt.split(";");
+            table +=
+              '<tr><th scope="row">' +
+              params[0].split('"')[1] +  // split fatto per evitare il [" presente a inizio stringa.
+              "</th>" +
+              "<td>" +
+              params[1] +
+              "</td>" +
+              "<td>" +
+              params[2] +
+              "</td>" +
+              "<td>" +
+              params[3] +
+              "</td>" +
+              "<td>" +
+              params[4] +
+              "</td>" +
+              "<td>" +
+              params[5] +
+              "</td>" +
+              "<td>" +
+              params[6] +
+              "</td>" +
+              "<td>" +
+              params[7] +
+              "</td>" +
+              "<td>" +
+              params[8] +
+              "</td>" +
+              "<td>" +
+              params[11].split('"')[0] + // split fatto per evitare il "] presente a fine stringa.
+              "</td>";
+          }
+        } else if (param === 2) {
+          alert("Funzione non supportata ancora!");
+        }
+        table += "</tbody></table>";
+        document.getElementById("risultato").innerHTML = table;
+      }
+    </script>
+    <div
+      class="container-fluid text-center"
+      style="background-color: white; color: black"
+    >
+      <h1>
+        <img
+          src="https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/logo_regione_marche.png?v"
+          alt="Logo della regione Marche"
+          class="img-fluid"
+          height="2%"
+          width="2%"
+        />
+        Storia e archeologia
+      </h1>
+      <p>Eventi storici nelle Marche - Ricerca</p>
+      <div class="text-center">
+        <button
+          type="button"
+          class="btn"
+          style="background-color: #008549; color: white"
+          onclick="window.location.href ='/';"
+        >
+          Torna alla pagina iniziale.
+        </button>
+      </div>
+      <hr />
+    </div>
+    <div
+      class="text-center m-2"
+      style="background-color: #008549; color: white"
+    >
+      <div class="row p-1 m-1">
+        <div class="col d-grid gap-2 text-left">
+          <h6>Indice</h6>
+        </div>
+        <div class="col sm-1">
+          <input type="number" class="form-control" name="indice" id="indice" />
+        </div>
+        <div class="col sm-4 d-grid gap-2">
+          <button class="btn btn-outline-light" onclick="cerca(1)">
+            Cerca per indice
+          </button>
+        </div>
+      </div>
+      <div class="row p-1 m-1">
+        <div class="col d-grid gap-2 text-right">
+          <h6>Comune</h6>
+        </div>
+        <div class="col sm-1">
+          <input type="text" class="form-control" name="comune" id="comune" />
+        </div>
+        <div class="col sm-4 d-grid gap-2">
+          <button class="btn btn-outline-light" onclick="cerca(2)">
+            Cerca per comune
+          </button>
+        </div>
+      </div>
+      <br />
+      <div class="row" id="risultato"></div>
+    </div>
   </body>
 </html>
