@@ -30,24 +30,16 @@
       </h1>
       <p>Punti di interesse storico nelle Marche</p>
     </div>
-    <div class="row align-items-center m-3" style="background-color:#008549; color:white;">
-      <div class="col p-1 text-center border-end" onclick="redirect('mappa')">
-        Visualizza la mappa e lista dei punti di interesse.
-      </div>
-      <div class="col p-1 text-center border-end" onclick="redirect('inserisci')">
-        Inserisci un nuovo punto di interesse.
-      </div>
-      <div class="col p-1 text-center border-end" onclick="redirect('rimuovi')">
-        Rimuovi un punto di interesse.
-      </div>
-      <div class="col p-1 text-center" onclick="redirect('cerca')">
-        Cerca un punto di interesse.
-      </div>
-    </div>
-    <div class="mt-5 p-4 bg-dark text-white fixed-bottom text-center">
+    <table class="table table-hover" style="background-color:#008549; color:white;">
+      <tr onclick="redirect('mappa')"> <th> Visualizza la mappa e lista dei punti di interesse. </th></tr>
+      <tr onclick="redirect('inserisci')"> <th> Inserisci un nuovo punto di interesse. </th></tr>
+      <tr onclick="redirect('rimuovi')"> <th> Rimuovi un punto di interesse. </th></tr>
+      <tr onclick="redirect('cerca')"> <th> Cerca un punto di interesse. </th></tr>
+    </table>
+     <footer class="mt-5 p-4 bg-dark text-white text-center">
       Arlind Pecmarkaj - 2022
       <br>
       <p>Progetto di Piattaforme Digitali per la gestione del Territorio - Facoltà di Informatica Applicata, Università degli Studi di Urbino</p>
-    </div>
+    </footer>
   </body>
 </html>
