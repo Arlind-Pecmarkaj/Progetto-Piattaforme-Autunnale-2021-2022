@@ -1,8 +1,6 @@
 const express = require("express");
 var bodyParser = require("body-parser");
 const fileSystem = require("fs");
-const multer = require('multer');
-const upload = multer()
 const app = express();
 
 // Inizializzazione tramite express.
@@ -11,26 +9,25 @@ app.use(express.json());
 
 // Setup per la visualizzazione grafica dei file html e
 // per configurare la cartella views come principale.
-
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
 app.set("views", __dirname);
 
 /* ---------------------- ENDPOINT GET ---------------------- */
-// N°1 - Endpoint per utenti browser.
+// N° 1 - Endpoint per utenti browser.
 // La richiesta get senza parametri porta alla pagina di index.
 app.get("/", (req, res) => {
   res.render("./views/index.html");
 });
 
-// N°2 - Endpoint per tutti i dati.
+// N° 2 - Endpoint per tutti i dati.
 // Fornisce tutti i dati puri
 app.get("/rawdata", (req, res) => {
   console.log("Richiesta dei dati puri.");
   res.type("text/csv").sendFile(__dirname + "/views/data.csv");
 });
 
-// N°3 - Endpoint per fornire le varie pagine html di visualizzazione.
+// N° 3 - Endpoint per fornire le varie pagine html di visualizzazione.
 app.get("/mappa", (req, res) => {
   res.render("./views/mappa.html");
 });
@@ -47,14 +44,30 @@ app.get("/cerca", (req, res) => {
   res.render("./views/cerca.html");
 });
 
-// N° 4 - Restituisce il dato alla posizione specificata
-app.get("/data/:position", (req, res) => {
+// N° 4 - Restituisce il dato alla posizione specificata (se si pass un numero) o
+// i dati con un determinato comune.
+app.get("/data/:par", (req, res) => {
   let eventi = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
-  console.log(req.params.position);
-  if (eventi.length >= req.params.position && req.params.position > 0) {
-    res.status(200).send(eventi[req.params.position]);
+  console.log(req.params.par);
+  // Controllo se han passato un parametro numerico o di tipo stringa.
+  if (isNaN(req.params.par)) { 
+    let data = [];
+    eventi.forEach(elemento => { // Salvo ogni elemento in cui i comuni combaciano.
+      let splitted = elemento.toString().split(";");
+      if (splitted[3] === req.params.par.toUpperCase())
+        data.push(elemento);
+    });
+    if (data.length === 0) { // Se l'array è vuoto non abbiamo trovato niente.
+      res.status(404).send("Non esistono eventi nel comune richiesto.");
+    } else {
+      res.status(200).send(JSON.stringify(data));
+    }
   } else {
-    res.status(400).send('Elemento non presente in lista o parametro illegale');
+      if (eventi.length > req.params.par && req.params.par > 0) {
+        res.status(200).send(eventi[req.params.par]);
+      } else {
+        res.status(400).send('Elemento non presente in lista o parametro illegale');
+      }
   }
 });
 
@@ -68,7 +81,8 @@ app.get("/inserimento", (req, res) => {
   let denominazione = req.query.denominazione
   let comune        = req.query.comune;
   let indirizzo     = req.query.indirizzo;
-  let civico        = (indirizzo === "")? req.query.civico : ""; //Se l'indirizzo è vuoto il civico è inutile metterlo
+  console.log("indirizzo: " + indirizzo);
+  let civico        = (indirizzo === "")? "" : req.query.civico ; //Se l'indirizzo è vuoto il civico è inutile metterlo
   let telefono      = req.query.telefono;
   let email         = req.query.mail;
   let sito          = req.query.sito;
@@ -90,8 +104,6 @@ app.get("/inserimento", (req, res) => {
                 orario];
   // Memorizzo il punto di interesse e riscrivo nel file i dati nuovi 
   eventi.push(evento);
-  console.log(eventi);
-  
   // L'input di orario lascia un '/n' e per risolverlo lo mettiamo per ultimo per non 
   // mettere una escape sequence in più
   let csv = "";
@@ -105,7 +117,9 @@ app.get("/inserimento", (req, res) => {
   res.render("./views/successo.html");
 });
 
-/* --- ENDPOIND DELETE --- */
+/* ---------------------- ENDPOINT DELETE ---------------------- */
+// N° - 1 Endpoint rimozione punto di interesse.
+// Rimuove il punto di interesse alla posizione specificata.
 app.delete("/rimuovi/:position", (req, res) => {
   let eventi = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
   console.log("Richiesta di rimozione dell'elemento n° " + req.params.position);
@@ -128,7 +142,8 @@ const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
-/* FUNZIONE PER CONVERTIRE DA CSV AD ARRAY */
+/* ---------------------- FUNZIONI (NO ENDPOINT) ---------------------- */
+// N° 1 - Funzione per convertire da CSV ad array.
 /* Preso da https://www.bennadel.com/blog/1504-ask-ben-parsing-csv-strings-with-javascript-exec-regular-expression-command.htm */
 function CSVToArray(strData, strDelimiter) {
   // Check to see if the delimiter is defined. If not, then default to comma.
