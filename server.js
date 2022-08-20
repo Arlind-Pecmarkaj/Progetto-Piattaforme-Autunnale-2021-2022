@@ -39,10 +39,6 @@ app.get("/inserisci", (req, res) => {
   res.render("./views/inserisci.html");
 });
 
-app.get("/modifica", (req, res) => {
-  res.render("./views/modifica.html");
-});
-
 app.get("/rimuovi", (req, res) => {
   res.render("./views/rimuovi.html");
 })
