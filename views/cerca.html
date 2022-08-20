@@ -29,47 +29,51 @@
           '</thead><tbody id="tabellaeventi">';
 
         if (param === 1) {
-          index = document.getElementById("indice").value;
+          let index = document.getElementById("indice").value;
           const res = await fetch("/data/" + index);
-          if (res.ok) {
-            txt = await res.text();
+          txt = await res.text();
+          if (res.ok) {         
             params = txt.split(";");
-            table +=
-              '<tr><th scope="row">' +
-              params[0].split('"')[1] +  // split fatto per evitare il [" presente a inizio stringa.
-              "</th>" +
-              "<td>" +
-              params[1] +
-              "</td>" +
-              "<td>" +
-              params[2] +
-              "</td>" +
-              "<td>" +
-              params[3] +
-              "</td>" +
-              "<td>" +
-              params[4] +
-              "</td>" +
-              "<td>" +
-              params[5] +
-              "</td>" +
-              "<td>" +
-              params[6] +
-              "</td>" +
-              "<td>" +
-              params[7] +
-              "</td>" +
-              "<td>" +
-              params[8] +
-              "</td>" +
-              "<td>" +
-              params[11].split('"')[0] + // split fatto per evitare il "] presente a fine stringa.
-              "</td>";
+            table += // split fatto per evitare il [" e "] presente a inizio e fine stringa.
+              '<tr><th scope="row">' + params[0].split('"')[1] + "</th>" +
+              "<td>" + params[1] + "</td>" +
+              "<td>" + params[2] + "</td>" +
+              "<td>" + params[3] + "</td>" +
+              "<td>" + params[4] + "</td>" +
+              "<td>" + params[5] + "</td>" +
+              "<td>" + params[6] + "</td>" +
+              "<td>" + params[7] + "</td>" +
+              "<td>" + params[8] + "</td>" +
+              "<td>" + params[11].split('"')[0] + "</td></tbody></table>";
+          } else {
+            table = "ERRORE: " + txt;
           }
         } else if (param === 2) {
-          alert("Funzione non supportata ancora!");
+          let comune = document.getElementById("comune").value;
+          const res = await fetch("/data/" + comune);
+          txt = await res.text();
+          if (res.ok) {
+  
+            JSON.parse(txt).forEach(elemento => {
+              params = elemento.toString().split(";");
+              table += 
+                '<tr><th scope="row">' + params[0] + "</th>" +
+                "<td>" + params[1] + "</td>" +
+                "<td>" + params[2] + "</td>" +
+                "<td>" + params[3] + "</td>" +
+                "<td>" + params[4] + "</td>" +
+                "<td>" + params[5] + "</td>" +
+                "<td>" + params[6] + "</td>" +
+                "<td>" + params[7] + "</td>" +
+                "<td>" + params[8] + "</td>" +
+                "<td>" + params[11];
+            });
+            table += "</td></tbody></table>";
+        
+          } else {
+            table = "ERRORE: " + txt;
+          }
         }
-        table += "</tbody></table>";
         document.getElementById("risultato").innerHTML = table;
       }
     </script>
@@ -87,7 +91,7 @@
         />
         Storia e archeologia
       </h1>
-      <p>Eventi storici nelle Marche - Ricerca</p>
+      <p>Punti di interesse storico nelle Marche - Ricerca</p>
       <div class="text-center">
         <button
           type="button"
@@ -97,6 +101,10 @@
         >
           Torna alla pagina iniziale.
         </button>
+        <hr>
+            <h5 class="text-center">
+        Effettua la ricerca tramite indice nella lista oppure tramite comune
+    </h5>
       </div>
       <hr />
     </div>
@@ -131,7 +139,7 @@
         </div>
       </div>
       <br />
-      <div class="row" id="risultato"></div>
+      <div class="text-center" id="risultato"></div>
     </div>
   </body>
 </html>
