@@ -7,6 +7,10 @@ const app = express();
 app.use(express.static("public"));
 app.use(express.json());
 
+// Per le richieste json.
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 // Setup per la visualizzazione grafica dei file html e
 // per configurare la cartella views come principale.
 app.engine("html", require("ejs").renderFile);
@@ -63,7 +67,7 @@ app.get("/data/:par", (req, res) => {
       res.status(200).send(JSON.stringify(data));
     }
   } else {
-      if (eventi.length > req.params.par && req.params.par > 0) {
+      if (eventi.length > req.params.par && req.params.par > 0) { // Indice 0 riservato per l'header csv.
         res.status(200).send(eventi[req.params.par]);
       } else {
         res.status(400).send('Elemento non presente in lista o parametro illegale');
@@ -76,13 +80,13 @@ app.get("/data/:par", (req, res) => {
 app.get("/inserimento", (req, res) => {
   let eventi = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
   // Acquisisco i dati dalla query.
+  // Poichè in questo caso la validazione è fatta client-side
   let didascalia    = req.query.didascalia;
   let tipologia     = req.query.tipologia;
   let denominazione = req.query.denominazione
   let comune        = req.query.comune;
   let indirizzo     = req.query.indirizzo;
-  console.log("indirizzo: " + indirizzo);
-  let civico        = (indirizzo === "")? "" : req.query.civico ; //Se l'indirizzo è vuoto il civico è inutile metterlo
+  let civico        = (indirizzo === "")? "" : req.query.civico ; //Se l'indirizzo è vuoto, il civico è inutile metterlo
   let telefono      = req.query.telefono;
   let email         = req.query.mail;
   let sito          = req.query.sito;
@@ -117,8 +121,28 @@ app.get("/inserimento", (req, res) => {
   res.render("./views/successo.html");
 });
 
+/* ---------------------- ENDPOINT POST ---------------------- */
+// N° 1 - Endpoint aggiunta elemento tramite JSON per client compatibili.
+app.post("/inserimento", (req, res) => {
+  let punto = req.body.didascalia    + ';' +
+              req.body.tipologia     + ';' +
+              req.body.denominazione + ';' +
+              req.body.comune        + ';' +
+              req.body.indirizzo     + ';' + 
+              req.body.civico        + ';' +
+              req.body.telefono      + ';' +
+              req.body.email         + ';' +
+              req.body.sito          + ';' +
+              req.body.latitudine    + ';' +
+              req.body.longitudine   + ';' +
+              req.body.orario        + '\n';
+  console.log(punto);
+  fileSystem.appendFileSync('./views/data.csv', punto);
+  res.status(200).send(punto);
+});
+
 /* ---------------------- ENDPOINT DELETE ---------------------- */
-// N° - 1 Endpoint rimozione punto di interesse.
+// N° 1 - Endpoint rimozione punto di interesse.
 // Rimuove il punto di interesse alla posizione specificata.
 app.delete("/rimuovi/:position", (req, res) => {
   let eventi = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
