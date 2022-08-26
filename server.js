@@ -1,5 +1,4 @@
 const express = require("express");
-var bodyParser = require("body-parser");
 const fileSystem = require("fs");
 const app = express();
 
