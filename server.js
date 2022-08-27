@@ -50,24 +50,24 @@ app.get("/cerca", (req, res) => {
 // N° 4 - Restituisce il dato alla posizione specificata (se si pass un numero) o
 // i dati con un determinato comune.
 app.get("/data/:par", (req, res) => {
-  let eventi = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
+  let punti = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
   console.log(req.params.par);
   // Controllo se han passato un parametro numerico o di tipo stringa.
   if (isNaN(req.params.par)) { 
     let data = [];
-    eventi.forEach(elemento => { // Salvo ogni elemento in cui i comuni combaciano.
+    punti.forEach(elemento => { // Salvo ogni elemento in cui i comuni combaciano.
       let splitted = elemento.toString().split(";");
       if (splitted[3] === req.params.par.toUpperCase())
         data.push(elemento);
     });
     if (data.length === 0) { // Se l'array è vuoto non abbiamo trovato niente.
-      res.status(404).send("Non esistono eventi nel comune richiesto.");
+      res.status(404).send("Non esistono punti di interesse nel comune richiesto.");
     } else {
       res.status(200).send(JSON.stringify(data));
     }
   } else {
-      if (eventi.length > req.params.par && req.params.par > 0) { // Indice 0 riservato per l'header csv.
-        res.status(200).send(eventi[req.params.par]);
+      if (punti.length > req.params.par && req.params.par > 0) { // Indice 0 riservato per l'header csv.
+        res.status(200).send(punti[req.params.par]);
       } else {
         res.status(400).send('Elemento non presente in lista o parametro illegale');
       }
@@ -77,7 +77,7 @@ app.get("/data/:par", (req, res) => {
 // N° 5 - Endpoint aggiunta evento.
 // La richiesta permette di aggiungere un nuovo punto di interesse tramite form html.
 app.get("/inserimento", (req, res) => {
-  let eventi = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
+  let punti = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
   // Acquisisco i dati dalla query.
   // Poichè in questo caso la validazione è fatta client-side
   let didascalia    = req.query.didascalia;
@@ -106,14 +106,14 @@ app.get("/inserimento", (req, res) => {
                 longitudine          + ";" +
                 orario];
   // Memorizzo il punto di interesse e riscrivo nel file i dati nuovi 
-  eventi.push(evento);
+  punti.push(evento);
   // L'input di orario lascia un '/n' e per risolverlo lo mettiamo per ultimo per non 
   // mettere una escape sequence in più
   let csv = "";
-  for (let i = 0; i < eventi.length - 1; i++) {
-    csv += String(eventi[i]) + "\n";
+  for (let i = 0; i < punti.length - 1; i++) {
+    csv += String(punti[i]) + "\n";
   }
-  csv += String(eventi[eventi.length - 1]);
+  csv += String(punti[punti.length - 1]);
   
   // Scrivo il file e mostro la pagina di successo.
   fileSystem.writeFileSync(__dirname + "/views/data.csv", csv);
@@ -123,37 +123,46 @@ app.get("/inserimento", (req, res) => {
 /* ---------------------- ENDPOINT POST ---------------------- */
 // N° 1 - Endpoint aggiunta elemento tramite JSON per client compatibili.
 app.post("/inserimento", (req, res) => {
-  let punto = req.body.didascalia    + ';' +
-              req.body.tipologia     + ';' +
-              req.body.denominazione + ';' +
-              req.body.comune        + ';' +
-              req.body.indirizzo     + ';' + 
-              req.body.civico        + ';' +
-              req.body.telefono      + ';' +
-              req.body.email         + ';' +
-              req.body.sito          + ';' +
-              req.body.latitudine    + ';' +
-              req.body.longitudine   + ';' +
-              req.body.orario        + '\n';
-  console.log(punto);
-  fileSystem.appendFileSync('./views/data.csv', punto);
-  res.status(200).send(punto);
+  if (req.body.didascalia    !== "" &&
+      req.body.tipologia     !== "" &&
+      req.body.denominazione !== "" &&
+      req.body.comune        !== "" &&
+      !isNaN(req.body.latitudine)   &&
+      !isNaN(req.body.longitudine)) {
+    let punto = '\n' + // Per evitare di appenderlo all'ultima riga
+                req.body.didascalia    + ';' +
+                req.body.tipologia     + ';' +
+                req.body.denominazione + ';' +
+                req.body.comune        + ';' +
+                req.body.indirizzo     + ';' + 
+                req.body.civico        + ';' +
+                req.body.telefono      + ';' +
+                req.body.mail          + ';' +
+                req.body.sito          + ';' +
+                req.body.latitudine    + ';' +
+                req.body.longitudine   + ';' +
+                req.body.orario        + '\n';
+    console.log(punto);
+    fileSystem.appendFileSync('./views/data.csv', punto);
+    res.status(200).send(punto);
+  } else {
+    res.status(400).send("Parametri mancanti.");
+  }
 });
 
 /* ---------------------- ENDPOINT DELETE ---------------------- */
 // N° 1 - Endpoint rimozione punto di interesse.
 // Rimuove il punto di interesse alla posizione specificata.
 app.delete("/rimuovi/:position", (req, res) => {
-  let eventi = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
+  let punti = CSVToArray(fileSystem.readFileSync("./views/data.csv"));
   console.log("Richiesta di rimozione dell'elemento n° " + req.params.position);
-  if (eventi.length >= req.params.position && req.params.position > 0) {
-    console.log(eventi[req.params.position]);
-    eventi.splice(req.params.position, 1);
+  if (punti.length >= req.params.position && req.params.position > 0) {
+    punti.splice(req.params.position, 1);
     let csv = "";
-    for (let i = 0; i < eventi.length - 1; i++) {
-      csv += String(eventi[i]) + "\n";
+    for (let i = 0; i < punti.length - 1; i++) {
+      csv += String(punti[i]) + "\n";
     }
-    csv += String(eventi[eventi.length - 1]);
+    csv += String(punti[punti.length - 1]);
     fileSystem.writeFileSync(__dirname + "/views/data.csv", csv);
     res.status(200).send("Elemento eliminato correttamente.");
   } else {

@@ -174,10 +174,46 @@ Il servizio è disponibile su: https://pdgt-punti-interesse-marche.glitch.me
 ---
 
 ## Utilizzo del servizio Web
+### Interfaccia iniziale
+
+L'utente si troverà questa pagina principale
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/pdgt1.png?v=1661629522359)
+
+### Mappa
+
+La mappa viene visualizzata nel seguente modo:
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/mappa1.png?v=1661629526022)  
+Mentre la lista:  
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/mappa2.png?v=1661629529510)
+
+### Inserimento
+Il form di inserimento si presenta in questo modo, con validazione di scrittura dei campi
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/inserisci2.png?v=1661629539348) 
+Compilando i campi otteniamo la seguente pagina:  
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/inserisci3.png?v=1661629543342)
+
+### Ricerca
+Il sito permette la ricerca tramite indice e tramite comune.  
+Qui il risultato se si mette un indice non presente o non valido
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/cerca1.png?v=1661629546619)
+Qui invece se si mette un comune non presente
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/cerca2.png?v=1661629549979)
+Se l'indice o il comune son corretti avremo
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/cerca3.png?v=1661629553478)
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/cerca4.png?v=1661629556754)
+
+### Eliminazione
+L'eliminazione viene effettuata tramite indice
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/elimina2.png?v=1661629564637)
+Se l'indice non è presente o si passa un valore non corretto
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/elimina1.png?v=1661629561325)
+
+### Inserimento da client esterni (prova da POSTMAN)
+Usufruendo dell'endpoint POST, se la richiesta è corretta, otteniamo indietro la riga in CSV appena inserita
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/postman2.png?v=1661630728233)
+Viceversa se mancano i parametri viene specificato
+![](https://cdn.glitch.global/93ac37e5-1239-438c-aa5b-344641e57492/postman1.png?v=1661630726403)
+
 
 ---
 
-## TODO
-
-Alla data di questa commit (27/08/2022) il progetto è ancora in fase di lavoro e il seguente file
-readme non è aggiornato.
