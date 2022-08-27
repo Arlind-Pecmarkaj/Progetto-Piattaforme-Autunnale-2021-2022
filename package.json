@@ -1,7 +1,7 @@
 {
   "name": "pdgt-punti-interesse-marche",
-  "version": "0.9.1",
-  "description": "Piattaforma web che permette di consultare e modificare gli eventi storici e i punti archeologici della regione Marche.",
+  "version": "1.0.1",
+  "description": "Piattaforma web che permette di consultare e modificare i punti di interesse storico della regione Marche.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
